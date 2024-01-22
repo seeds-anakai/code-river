@@ -24,6 +24,6 @@ jobs:
         run: |
           aws bedrock-agent-runtime retrieve-and-generate \
             --retrieve-and-generate-configuration 'type=KNOWLEDGE_BASE,knowledgeBaseConfiguration={knowledgeBaseId=${{ secrets.KNOWLEDGE_BASE_ID }},modelArn=${{ secrets.MODEL_ARN }}}' \
-            --input 'text=${{ github.event_name == 'issues' && format('{0}\n{1}', github.event.issue.title, github.event.issue.body) || github.event.comment.body }}' \
+            --input 'text=${{ github.event_name == 'issues' && format(fromJSON('"# {0}\n{1}"'), github.event.issue.title, github.event.issue.body) || github.event.comment.body }}' \
             | jq -r '.citations | map(.generatedResponsePart.textResponsePart.text) | join("\n")' \
             | gh issue comment ${{ github.event.issue.number }} -R ${{ github.repository }} -F -
