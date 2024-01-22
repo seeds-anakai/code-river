@@ -1,0 +1,24 @@
+name: issue
+on:
+  issue_comment:
+    types:
+      - created
+env:
+  AWS_REGION: us-east-1
+jobs:
+  issue:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+      - env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          aws bedrock-agent-runtime retrieve-and-generate \
+            --retrieve-and-generate-configuration 'type=KNOWLEDGE_BASE,knowledgeBaseConfiguration={knowledgeBaseId=${{ secrets.KNOWLEDGE_BASE_ID }},modelArn=${{ secrets.MODEL_ARN }}}' \
+            --input 'text=${{ github.event.comment.body }}' | jq -r '.output.text' | gh issue comment ${{ github.event.issue.number }} --repo ${{ github.repository }} --body-file -
