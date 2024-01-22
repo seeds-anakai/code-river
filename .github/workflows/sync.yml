@@ -1,6 +1,8 @@
 name: sync
 on:
-  - push
+  push:
+    branches:
+      - main
 concurrency:
   group: ${{ github.ref }}
 env:
@@ -18,7 +20,7 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
       - run: |
-          aws s3 sync . s3://${{ secrets.REPO_BUCKET_NAME }}/${{ github.ref_name }} \
+          aws s3 sync . s3://${{ secrets.DATA_SOURCE_BUCKET_NAME }} \
             --exclude '.git/*' \
             --exact-timestamps \
             --delete

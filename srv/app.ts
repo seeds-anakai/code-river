@@ -37,14 +37,14 @@ class CodeRiverStack extends Stack {
   constructor(scope: Construct, id: string, { githubRepo, ...props }: CodeRiverStackProps) {
     super(scope, id, props);
 
-    // Repository Bucket
-    const repoBucket = new s3.Bucket(this, 'RepoBucket', {
+    // Data Source Bucket
+    const dataSourceBucket = new s3.Bucket(this, 'DataSourceBucket', {
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
     });
 
-    // Repository Bucket Name
-    new CfnOutput(this, 'RepoBucketName', {
-      value: repoBucket.bucketName,
+    // Data Source Bucket Name
+    new CfnOutput(this, 'DataSourceBucketName', {
+      value: dataSourceBucket.bucketName,
     });
 
     // GitHub OIDC Provider
@@ -62,8 +62,8 @@ class CodeRiverStack extends Stack {
       }),
     });
 
-    // Add permissions to access Repository Bucket.
-    repoBucket.grantReadWrite(githubRole);
+    // Add permissions to access Data Source Bucket.
+    dataSourceBucket.grantReadWrite(githubRole);
 
     // GitHub Role ARN
     new CfnOutput(this, 'GitHubRoleArn', {
