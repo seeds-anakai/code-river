@@ -24,3 +24,7 @@ jobs:
             --exclude '.git/*' \
             --exact-timestamps \
             --delete
+      - run: |
+          aws bedrock-agent start-ingestion-job \
+            --knowledge-base-id ${{ secrets.KNOWLEDGE_BASE_ID }} \
+            --data-source-id ${{ secrets.DATA_SOURCE_ID }}
