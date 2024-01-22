@@ -65,19 +65,22 @@ class CodeRiverStack extends Stack {
     // Add permissions to access Data Source Bucket.
     dataSourceBucket.grantReadWrite(githubRole);
 
-    // Add permissions to associate third party knowledge base.
+    // Add permissions to access Amazon Bedrock.
     githubRole.addToPolicy(new iam.PolicyStatement({
       actions: [
         'bedrock:AssociateThirdPartyKnowledgeBase',
+        'bedrock:InvokeModel',
+        'bedrock:RetrieveAndGenerate',
       ],
       resources: [
         '*',
       ],
     }));
 
-    // Add permissions to start ingestion job.
+    // Add permissions to access Knowledge Bases for Amazon Bedrock.
     githubRole.addToPolicy(new iam.PolicyStatement({
       actions: [
+        'bedrock:Retrieve',
         'bedrock:StartIngestionJob',
       ],
       resources: [
